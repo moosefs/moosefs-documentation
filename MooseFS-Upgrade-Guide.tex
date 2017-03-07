@@ -1,0 +1,408 @@
+% Copyright (c) 2014-2017 Piotr Robert Konopelko, Core Technology Sp. z o.o.
+% 
+% This file is part of MooseFS.
+% 
+% MooseFS is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, version 2 (only).
+% 
+% MooseFS is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with MooseFS; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA
+% or visit http://www.gnu.org/licenses/gpl-2.0.html
+
+\documentclass[a4paper,11pt,english]{report}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{fullpage}
+\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+
+\lstset{
+	language=bash,
+	basicstyle=\ttfamily\scriptsize,
+	showstringspaces=false,
+	commentstyle=\color{black},
+	keywordstyle=\color{black},
+	breakatwhitespace=false,
+	breaklines=true,
+	showspaces=false,
+	tabsize=4
+}
+
+\def\code#1{\texttt{#1}}
+
+\newenvironment{copyrightnotice}
+	{\begingroup
+		\footnotesize
+		\setlength{\parindent}{0pt}
+		\setlength{\parskip}{\baselineskip}}
+	{\endgroup}
+
+% ------------------------------------------------------------------------
+
+\begin{document}
+	
+	\renewcommand{\labelitemi}{$\bullet$}
+	\renewcommand{\labelitemii}{$\circ$}
+	\renewcommand{\labelitemiii}{$\bullet$}
+	\renewcommand{\labelitemiv}{$\circ$}
+	
+	\begin{titlepage}
+		\begin{center}
+			\includegraphics[width=0.2\textwidth]{images/moosefs.png}\\[1cm]
+
+			% Title
+			{ \huge \bfseries MooseFS 2.0 Upgrade Guide \\[0.4cm] }
+
+
+			\textsc{Core Technology} Development \& Support Team
+			
+			\vfill
+			
+			% Bottom of the page
+			{\large \today}
+		\end{center}
+	\end{titlepage}
+	
+	
+	% Copyright page
+	\begin{copyrightnotice}
+		\begin{flushleft}
+			Copyright \textcopyright{} 2014-\the\year
+			\hfill
+			\textsc{v. 1.0.8}\\ % DOCUMENTVERSION
+			
+			Piotr Robert Konopelko, \textsc{Core Technology} Development \& Support Team.
+			
+			\emph{Proofread by}
+			Agata Kruszona-Zawadzka \\
+			\emph{Coordination \& layout by} Piotr Robert Konopelko.
+			
+			Please send corrections to \href{mailto:peter@mfs.io}{Piotr Robert Konopelko} --  peter@mfs.io.
+			
+			\bigskip
+			
+			This file is part of MooseFS.
+			
+			MooseFS is free software; you can redistribute it and/or modify
+			it under the terms of the GNU General Public License as published by
+			the Free Software Foundation, version 2 (only).
+			
+			MooseFS is distributed in the hope that it will be useful,
+			but WITHOUT ANY WARRANTY; without even the implied warranty of
+			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+			GNU General Public License for more details.
+			
+			You should have received a copy of the GNU General Public License
+			along with MooseFS; if not, write to the Free Software
+			Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA
+			or visit \url{http://www.gnu.org/licenses/gpl-2.0.html}
+		\end{flushleft}
+	\end{copyrightnotice}
+	
+	\vfill
+	
+	\tableofcontents
+
+% ==================================================================================================================
+
+	\chapter{Introduction}
+	This book guides you through the process of upgrading and/or migrating MooseFS. It describes upgrading MooseFS to newer version in 2.0.x branch, upgrading from 1.6.27-5 to 2.0.x, migrating from Community Edition to Pro and migrating from Pro to Community Edition.
+	
+	It is strongly advised to read the entire document before attepmting to start the upgrade/migration process.
+	
+	There are several prerequisites, discussed in the following paragraphs, that should be taken into consideration before upgrading/migrating MooseFS.
+	
+		\section{Backing-up data and configuration files}
+		The most important thing is to \textbf{back-up all configuration, metadata and changelog files that contain critical MooseFS configuration. Losing those files may lead to data loss and a serious problem with recovering your files.} \\
+
+		If MooseFS was installed from officially supported packages or repository (version 2.0 and higher), the configuration files should be located in default configuration path i.e. \code{/etc/mfs} and metadata files should be located in \code{/var/lib/mfs}\\
+		
+		If you installed MooseFS 1.6.27-5 from sources without any additional parameters to \code{configure} script, the configuration files and metadata should be located in \code{/usr/local/var/lib/mfs} or \code{/usr/local/etc/mfs}. Depending on parameters selected during compilation process, these paths may vary (e.g. it might be \code{/etc}, \code{/etc/mfs}, \code{/var/lib/mfs}). If you compiled MooseFS from sources and set different paths, you should refer to your site specific documentation to find out where MooseFS configuration files have been placed.
+		
+		
+\section{Repository}
+	\subsection{Adding repository}
+		To install MooseFS 2.0 Pro or CE you need to add MooseFS Official Supported Repositories to your system. This process is described at \url{http://get.moosefs.com} (please select your distribution in menu on the left) or in paragraph 2.2 in document named \textit{Installing MooseFS 2.0 Step by Step Tutorial}.\\
+
+		At this time there are repositories available for Ubuntu / Debian, RHEL / CentOS / Fedora, FreeBSD and MacOS X.
+			
+	\subsection{Repository branches}
+		Our repository contains two branches: \code{stable} and \code{current}. Version from \code{stable} branch has been tested both in the production and in our test environment. Version from \code{current} branch -- only in our test environment. MooseFS versions in these branches are upgraded automatically after finishing the tests.
+		
+		At the time of writing this guide, \code{stable} branch contains version 2.0.39-1, and \code{current} branch contains version 2.0.40-1.
+
+		\code{Stable} branch is default and you don't need to make any changes in default URL: \\
+		\code{http://ppa.moosefs.com/stable/}.
+		
+		If you want to use \code{current} branch, you just need to replace \code{stable} with \code{current} after \code{http://ppa.moosefs.com/} and before \code{apt}, \code{yum}, \code{freebsd} or \code{osx}, so URL will look like: \\\\
+		\code{http://ppa.moosefs.com/current/[rest of url]} \\
+		
+		It is also possible to use version number instead of "branch" if you want to upgrade to a specific version of MooseFS (e.g. 2.0.40-1):
+		
+		\code{http://ppa.moosefs.com/2.0.40/[rest of url]}
+		
+		If you want to use this option, please remember you need to manually change version number on each server to the selected one before doing an upgrade.
+		
+	\chapter{MooseFS 2.0 (CE and Pro) upgrade to newer version}
+	This chapter describes general MooseFS Upgrade process (e.g. from version 2.0.34 to 2.0.35). Upgrading to newer version is very simple, but \textbf{there is one important thing}: the order of upgrade. We only support the following upgrade order:
+	\begin{enumerate}
+		\item Upgrading all MooseFS master follower(s) (one-by-one) (Pro only)
+		\item Upgrading MooseFS leader master and MooseFS tools (cgi \& cgiserv, cli, supervisor (Pro only))
+		\item Upgrading all MooseFS metaloggers (one-by-one)
+		\item Upgrading all MooseFS chunkservers (one-by-one)
+		\item Upgrading all MooseFS clients (one-by-one)
+	\end{enumerate}
+	
+	\bigskip
+	\bigskip
+	On every server upgrading comes down to running two commands:\\
+	\code{\# apt-get update \\
+	\# apt-get upgrade}
+	
+	\bigskip
+	\bigskip
+	The second command listed above will upgrade all packages installed on your system. If you want to upgrade only one package (e.g. \code{moosefs-pro-master}), please run e.g.: \\
+	\code{\# apt-get install moosefs-pro-master}
+	
+	-- this will upgrade only the specified package to the newest version.
+
+	\chapter{MooseFS 1.6.27-5 to 2.0.x CE upgrade}
+	\textbf{Notice: It is not possible to roll-back to older (1.6.27-5) version after this upgrade!}
+	\bigskip
+		
+		\bigskip
+		\section{Making backup of data and configuration files}
+		Now you \textbf{need to} back-up configuration files in a safe place, as described in \textbf{Paragraph 1.1} above. The backup should be done on \textbf{all servers}, i.e. configuration and metadata from \textbf{each} server should be backed-up.
+		
+		\section{Upgrading MooseFS master server: stopping, removing, installing, configuring and starting up}
+			\bigskip
+			\subsection{Stopping}
+			In order to stop \code{mfsmaster}, run the following command: \\ \code{\# mfsmaster stop} 
+			
+			\bigskip
+			\subsection{Removing}
+			\begin{itemize}
+				\item If you have installed MooseFS 1.6.27-5 from packages: \\ \code{\# apt-get purge --purge mfs-master}
+				\item or:\\ \code{\# dpkg -P mfs-master}
+				\item Otherwise, if MooseFS has been compiled and installed from sources, you have to remove all MooseFS binaries (\code{mfsmaster}, \code{mfscgi}, ...) (most likely) from \code{/usr/sbin}, \code{/usr/local/bin} or \code{/usr/local/sbin}.
+			\end{itemize}
+		\bigskip
+		\subsection{Installing new version of MooseFS master server}
+		The next step to do is installing MooseFS 2.0 CE master server. For example on Debian/Ubuntu you can do it by running the following command:
+		
+		\bigskip		
+		\code{\# apt-get install moosefs-master}
+		
+		\bigskip
+		\subsection{Copying and comparing configuration files}
+		It is assumed, that old configuration is in \code{/etc} (it may exist in \code{/etc}, \code{/usr/local/etc}, or \code{/usr/local/etc/mfs} depending on the way MooseFS has been installed, so make sure where your configuration files are and make changes in following commands). Metadata should exist in \code{/var/lib/mfs}. If metadata files are in different location, please move them to \code{/var/lib/mfs}.
+		\begin{itemize}
+			\item Next step is to move old configuration files: \\
+				\code{\# mv /etc/mfsmaster.cfg /etc/mfs/mfsmaster.cfg.old} \\
+				\code{\# mv /etc/mfsexports.cfg /etc/mfs/mfsexports.cfg.old} \\
+				\code{\# mv /etc/mfstopology.cfg /etc/mfs/mfstopology.cfg.old} \\
+				
+				And copy examples as new configuration files:
+				
+				\code{\# cp -i /etc/mfs/mfsmaster.cfg.dist /etc/mfs/mfsmaster.cfg} \\
+				\code{\# cp -i /etc/mfs/mfsexports.cfg.dist /etc/mfs/mfsexports.cfg} \\
+				\code{\# cp -i /etc/mfs/mfstopology.cfg.dist /etc/mfs/mfstopology.cfg}
+				
+				
+			\item The last step before starting up the new master server is to \textbf{compare new configuration files with old ones} and \textbf{make changes in new configuration}. In this step you need to rewrite modified parameters from old file to new one: \\
+				\code{\# vim -d /etc/mfs/mfsmaster.cfg /etc/mfs/mfsmaster.cfg.old} \\
+				\textbf{Perform this step for every configuration files.}
+		\end{itemize}
+		
+		\bigskip
+		\subsection{Starting up master server}
+		The last step is to start up the \code{mfsmaster} process.
+		
+		\bigskip
+		\bigskip
+		\section{Upgrading the rest of MooseFS modules}
+		Now you should upgrade the rest of MooseFS modules. It should be done analogously to MooseFS master server upgrade, in following order:
+		\begin{itemize}
+			\item Make sure you have backed-up configuration and metadata files
+			\item Stop MooseFS module process
+			\item Remove MooseFS module binaries
+			\item Install version 2.0.x of MooseFS module
+			\item Copy old, \textbf{compare with new} and \textbf{make proper changes to new configuration files} and make sure  metadata and changelogs files are in \code{/var/lib/mfs} (on metaloggers)
+			\item Start module's process
+		\end{itemize}
+		
+		\bigskip
+		\bigskip
+		The proper modules upgrade order is:
+		\begin{itemize}
+			\item MooseFS metalogger(s) (one-by-one)
+			\item MooseFS chunkservers (one-by-one)
+			\item MooseFS clients (mounts) (one-by-one)
+		\end{itemize}
+		
+		
+	\chapter{MooseFS 2.0 CE to Pro HA migration}
+	\textbf{Notes:}
+	\begin{itemize}
+		\item MooseFS PRO \textbf{depends on DNS}, so make sure that your local DNS server is running and resolving name for \code{mfsmaster} (or other chosen host name) properly.
+		\item In Pro version it is not possible to use \code{/etc/hosts} file to resolve \code{mfsmaster} (or other chosen name). After making sure your DNS is working properly, you must remove entries pointing to master host from \code{/etc/hosts}.
+		\item Before you start the migration it is good to know that during the packages uninstall process files like: \code{/etc/default/moosefs-master} and \code{/etc/init.d/moosefs-master} will be removed. Configuration and metadata files will not be deleted during migration, but good idea is to backup them first.
+	\end{itemize}
+	
+	\bigskip
+
+				
+		\section{MFS Master migration}
+		\begin{itemize}
+			\item Stop MooseFS CE master: \code{mfsmaster -c /etc/mfs/mfsmaster.cfg stop}
+			\item Uninstall \code{moosefs-master}, \code{moosefs-cli}, \code{moosefs-cgiserv}, \code{moosefs-cgi}, \code{moosefs-supervisor} packages
+			\item Install \code{moosefs-pro-master}, \code{moosefs-pro-supervisor}, \code{moosefs-pro-cgi}, \code{moosefs-pro-cgiserv}, \code{moosefs-pro-cli} packages
+			\item Restart MooseFS cgi server \code{mfscgiserv restart}
+			\item Place \code{mfslicence.bin} file in \code{/etc/mfs} folder
+			\item Start mfsmaster pro version \code{mfsmaster -c /etc/mfs/mfsmaster.cfg start}
+		\end{itemize}
+		
+			\section{Upgrading chunkservers}
+		It is important to perform chunkservers migration before adding master FOLLOWER in HA configuration. Only pro chunkservers are capable of switching to new LEADER master during the failure.
+		
+		Chunkservers can be updated one by one on a running system \textbf{only} if the minimum goal of all files in the system is at least \textbf{2}. Otherwise you need to stop the master before performing any and all chunkservers updates.
+		
+		If in \code{/etc/default/moosefs-chunkserver} file value \code{MFSCHUNKSERVER\_ENABLE} is set to \code{true} then during uninstall proces mfschunkserver will automatically stop and then start. If not, you need to restart it manually.
+		
+		\begin{itemize}
+			\item Stop chunkserver \code{mfschunkserver stop}
+			\item Uninstall \code{moosefs-chunkserver} from system
+			\item Install \code{moosefs-pro-chunkserver}
+			\item Start chunkserver \code{mfschunkserver start}
+		\end{itemize}
+		
+		\section{Upgrading clients (mounts)}
+		\begin{itemize}
+			\item Umount mfs mountpoints: \code{umount /mnt/mfs}
+			\item Remove \code{moosefs-client} from system
+			\item Install \code{moosefs-pro-client}
+			\item Mount MooseFS: \code{mfsmount /mnt/mfs} \\\\
+			Alternatively you can add this entry to \code{/etc/fstab} to mount MooseFS automatically when system starts: \\
+			
+			\begin{itemize}
+				\item For Linux: \code{mfsmount		/mnt/mfs		fuse	defaults	0	0}
+				\item For FreeBSD: \code{mfsmount\_magic  /mnt/mfs        moosefs rw,mfsmaster=mfsmaster,\\mountprog=/usr/local/bin/mfsmount,late    0       0}
+			\end{itemize}
+		\end{itemize}
+
+		\section{Adding master followers}
+		This process is described below in \textbf{Chapter 6: Adding master follower(s) servers(s) procedure}
+		To add master followers, jump to Chapter 6 now and follow instructions placed there.
+		
+	\chapter{MooseFS 2.0 Pro HA to CE migration}
+	MooseFS 2.0 is fully switchable between CE and PRO version. So all your data are safe and there is no reason to be afraid to test PRO version and then switch to CE version.
+	Remember that the most important thing in migration is to preserve the order in these steps:
+	
+		\section{Checking LEADER master}
+		If your LEADER master is not running on selected (i.e. the one, that will became the CE master) hardware machine, switch it using \code{mfssupervisor} command. For example your LEADER master is running on IP 192.168.0.2 machine and your CE master needs to be on IP 192.168.0.1 machine.\\\\ 
+		\code{mfssupervisor -l 192.168.0.1}\\\\
+		Now wait a few seconds for chunkservers and clients to switch connection to new master LEADER.
+
+		\section{Changing DNS entry}
+		When your master LEADER is on selected machine, it is time to remove all 'extra masters' -- FOLLOWERS  entries from your DNS configuration. Leave only one mfsmaster IP. Now restart DNS service. Remember that propagation of new DNS entries can take some time and it depends on your TTL DNS configuration.		
+		
+		\section{Stopping FOLLOWERS}
+		
+		Next step in migration is to stop all 'extra masters' -- FOLLOWERS in your cluster. On all master FOLLOWERS machines stop mfsmaster proces\\\\
+		\code{mfsmaster -c /etc/mfs/mfsmaster.cfg stop}
+		
+		\section{Migrating master}
+		This step will stop master for installation time. Whole MFS cluster will be down!\\
+		\begin{itemize}
+			\item Stop mfsmaster on LEADER machine\\ \code{mfsmaster -c /etc/mfs/mfsmaster.cfg}
+			\item Remove \code{moosefs-pro-*} packages from system
+			\item Install \code{moosefs-}: \code{master}, \code{cgi}, \code{cgiserv}, \code{cli} package
+			\item Restart \code{cgiserv} (\code{mfscgiserver restart})
+			\item Start \code{mfsmaster} CE version \code{mfsmaster -c /etc/mfs/mfsmaster.cfg start}
+		\end{itemize}
+		Now your master is running in CE version and CGI and cli are not displaying LEADER -- FOLLOWER informations in tables.
+		
+		\section{Migrating metaloggers}
+		Installation of metaloggers in HA cluster is not necessary, but in CE configuration is is strongly recommended option. Without metaloggers, your metadata files are saved on one physical machine only. Running metalogger on another machine is the best solution for metadata backup.\\
+		If metalogger was running in your PRO version perform these steps to migrate:
+		
+		\begin{itemize}
+			\item Stop metalogger \code{mfsmetalogger -c /etc/mfs/mfsmetalogger.cfg stop}
+			\item Remove \code{moosefs-pro-metalogger} from system
+			\item Install \code{moosefs-metalogger}
+			\item Start metalogger \code{mfsmetalogger -c /etc/mfs/mfsmetalogger.cfg start}
+		\end{itemize}
+		
+		If metalogger was not running in your PRO version, install one now -- refer to chapter \textbf{3.4} of "\textbf{Installing MooseFS 2.0
+Step by Step Tutorial}" 
+		
+		\section{Migrating chunkservers}
+		Now it's time to perform chunkserver migration. It can be done on running system -- if your minimal goal is set to 2. If not, we suggest stopping master server before starting chunkservers migration. If you have set goal 2, on whole MFS then update can be done with One-By-One method and without stopping the cluster.
+		\begin{itemize}
+		\item Stop chunkserver \code{mfschunkserver -c /etc/mfs/mfschunkserver.cfg stop}
+		\item Remove \code{moosefs-pro-chunkserver} from system
+		\item Install \code{moosefs-chunkserver}
+		\item Start chunkserver \code{mfschunkserver -c /etc/mfs/mfschunkserver.cfg start}
+		\end{itemize}
+		
+		\textbf{Repeat these steps for every chunk server.}
+		
+		\section{Migrating clients (mounts)}
+		This step is similar to chunkserver migration. First you need to umount mfs and then uninstall \code{mfsclient} from system.
+		\begin{itemize}
+		\item Umount all mount points for MooseFS
+		\item Uninstall \code{moosefs-pro-client}
+		\item Install \code{moosefs-client}
+		\item Mount MooseFS: \code{mfsmount /mnt/mfs} \\\\
+		Alternatively you can add this entry to \code{/etc/fstab} to mount MooseFS automatically when system starts: \\
+			\begin{itemize}
+				\item For Linux: \code{mfsmount		/mnt/mfs		fuse	defaults	0	0}
+				\item For FreeBSD: \code{mfsmount\_magic  /mnt/mfs        moosefs rw,mfsmaster=mfsmaster,\\mountprog=/usr/local/bin/mfsmount,late    0       0}
+			\end{itemize}
+		\end{itemize}
+		
+	\chapter{Adding master follower(s) server(s) procedure (Pro only)}
+		\section{Installing 'extra masters'}
+		Please remember that \textbf{all masters servers need to have the same configuration and licence files} and identical or very similar hardware configuration. For example if your current MASTER have 64GB RAM and 256GB HDD, other masters need to have at least the same (or greater) amount of RAM and HDD space.
+		
+		Let's start by adding 'extra master' in your cluster:
+		\begin{itemize}
+			\item Install \code{moosefs-pro-master}, \code{moosefs-pro-supervisor}, \\ \code{moosefs-pro-cli}
+			\item Copy configuration from mfsmaster\\ \code{scp root@mfsmaster:"/etc/mfs/mfsmaster.cfg /etc/mfs/mfsexports.cfg \\ /etc/mfs/mfstopology.cfg /etc/mfs/mfslicence.bin" /etc/mfs}
+		
+			\item First start of Follower Master Server should be performed with \code{-e} option to let it download metadata from Leader Master Server. You can achieve this by issuing the following command: \\
+			\code{mfsmaster -e -c /etc/mfs/mfsmaster.cfg start}			
+		\end{itemize}
+		
+		Your new master is FOLLOWER and is downloading metadata from LEADER master but it is not visible in CGI and CLI tables. Now it's time to add DNS entry for the new master server.  
+
+		\section{Adding DNS entries}
+		To start working with HA and 'extra masters' -- FOLLOWERS in your cluster you need to point all masters IP to one name in DNS.
+		
+		For example in your configuration there will be three masters and your entries should look similar to these ones:\\\\
+		\code{
+		mfsmaster	IN	A	192.168.0.1;\\
+		mfsmaster	IN	A	192.168.0.2;\\
+		mfsmaster	IN	A	192.168.0.3;\\
+		\\
+		mfsmaster1	IN	A	192.168.0.1;\\
+		mfsmaster2	IN	A	192.168.0.2;\\
+		mfsmaster3	IN	A	192.168.0.3;\\				
+		} 		
+
+		Now is time to restart DNS service and wait for it to propagate changes in your network. This step can take some time depending on TTL settings. The whole system will be fully-HA after DNS propagation.
+	
+		You can test if DNS propagation is done in your LAN. Just run \code{host mfsmaster} command on several machines in LAN. If you see three addresses near hostname it means that DNS cache is updated and now MFS is running in HA configuration.
+		
+		Now check CGI or use CLI (\code{mfscli -SIM}) to see if your LEADER and FOLLOWERS are visible.
+	
+\end{document}
