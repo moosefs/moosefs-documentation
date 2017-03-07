@@ -22,23 +22,23 @@ RM=rm
 all: MooseFS-2-0-Users-Manual.pdf MooseFS-3-0-Users-Manual.pdf MooseFS-Step-by-Step-Tutorial.pdf MooseFS-Upgrade-Guide.pdf
 
 MooseFS-2-0-Users-Manual.pdf:
-	$(TEX) -synctex=1 MooseFS-2-0-Users-Manual.tex
-	$(TEX) -synctex=1 MooseFS-2-0-Users-Manual.tex
+	$(TEX) -synctex=1 -interaction=batchmode MooseFS-2-0-Users-Manual.tex
+	$(TEX) -synctex=1 -interaction=batchmode MooseFS-2-0-Users-Manual.tex
 	$(RM) -v MooseFS-2-0-Users-Manual.{aux,log,out,synctex.gz,toc}
 
 MooseFS-3-0-Users-Manual.pdf:
-	$(TEX) -synctex=1 MooseFS-3-0-Users-Manual.tex
-	$(TEX) -synctex=1 MooseFS-3-0-Users-Manual.tex
+	$(TEX) -synctex=1 -interaction=batchmode MooseFS-3-0-Users-Manual.tex
+	$(TEX) -synctex=1 -interaction=batchmode MooseFS-3-0-Users-Manual.tex
 	$(RM) -v MooseFS-3-0-Users-Manual.{aux,log,out,synctex.gz,toc}
 
 MooseFS-Step-by-Step-Tutorial.pdf:
-	$(TEX) -synctex=1 MooseFS-Step-by-Step-Tutorial.tex
-	$(TEX) -synctex=1 MooseFS-Step-by-Step-Tutorial.tex
+	$(TEX) -synctex=1 -interaction=batchmode MooseFS-Step-by-Step-Tutorial.tex
+	$(TEX) -synctex=1 -interaction=batchmode MooseFS-Step-by-Step-Tutorial.tex
 	$(RM) -v MooseFS-Step-by-Step-Tutorial.{aux,log,out,synctex.gz,toc}
 
 MooseFS-Upgrade-Guide.pdf:
-	$(TEX) -synctex=1 MooseFS-Upgrade-Guide.tex
-	$(TEX) -synctex=1 MooseFS-Upgrade-Guide.tex
+	$(TEX) -synctex=1 -interaction=batchmode MooseFS-Upgrade-Guide.tex
+	$(TEX) -synctex=1 -interaction=batchmode MooseFS-Upgrade-Guide.tex
 	$(RM) -v MooseFS-Upgrade-Guide.{aux,log,out,synctex.gz,toc}
 
 clean:
