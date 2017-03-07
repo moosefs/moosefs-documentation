@@ -1,0 +1,14 @@
+*.aux
+*.bak
+*.bbl
+*.blg
+*.dvi
+*.log
+*.out
+*.pdf
+*.synctex.gz
+*.tex.bak
+*.toc
+.DS_Store
+.directory
+
