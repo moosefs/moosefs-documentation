@@ -318,7 +318,6 @@ High reliability is achieved by configuring as many different data servers as ap
 		
 		\begin{itemize}
 			\item In case of Linux a kernel module with API 7.8 or later is required (it can be checked with dmesg command -- after loading kernel module there should be a line fuse init (API version 7.8)). It is available in fuse package 2.6.0 (or later) or in Linux kernel 2.6.20 (or later). Due to some minor bugs, the newer module is recommended (fuse 2.7.2 or Linux 2.6.24, although fuse 2.7.x standalone doesn't contain getattr/write race condition fix).
-			\item In case of FreeBSD we recommed using fuse-freebsd\footnote{\url{https://github.com/glk/fuse-freebsd}}, which is a successor to fuse4bsd.
 			\item For MacOSX we recommend using OSXFUSE\footnote{\url{http://osxfuse.github.com}}, which is a successor to MacFUSE and has been tested on MacOSX 10.6, 10.7, 10.8, 10.9 and 10.11.
 		\end{itemize}
 
@@ -791,9 +790,9 @@ More information about configuring DNS server is included in supplement to "Moos
 
 		\underline{MooseFS Client}:
 		
-		To enable MooseFS Client automount during boot add the following entry in \code{/boot/loader.conf} to let FreeBSD load \code{fuse} module during boot:
+		To enable MooseFS Client automount during boot add the following entry in \code{/etc/rc.conf} to let FreeBSD load the \code{fusefs} module during boot:
 		\begin{lstlisting}
-	fuse_load="YES"
+	kld_list="fusefs"
 		\end{lstlisting}
 		
 		And add the entry in \code{/etc/fstab}:
